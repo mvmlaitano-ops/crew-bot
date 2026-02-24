@@ -177,6 +177,17 @@ async def enviar_review(chat_id):
     await bot.send_message(chat_id=chat_id, text=format_review(), parse_mode=ParseMode.MARKDOWN)
 
 def main():
+    import time
+    # Limpa conexoes anteriores antes de iniciar
+    async def cleanup_and_start():
+        bot = Bot(token=BOT_TOKEN)
+        async with bot:
+            await bot.delete_webhook(drop_pending_updates=True)
+            print("Webhook deletado, aguardando 2s...")
+        time.sleep(2)
+
+    asyncio.run(cleanup_and_start())
+
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", cmd_start))
     app.add_handler(CommandHandler("desafio", cmd_desafio))
@@ -185,8 +196,8 @@ def main():
     app.add_handler(CommandHandler("agente", cmd_agente))
     app.add_handler(CommandHandler("status", cmd_status))
     app.add_handler(CommandHandler("ajuda", cmd_ajuda))
-    print("CREW Bot rodando...")
-    app.run_polling(drop_pending_updates=True)
+    print("CREW Bot iniciado com sucesso!")
+    app.run_polling(drop_pending_updates=True, poll_interval=2.0, timeout=10)
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
