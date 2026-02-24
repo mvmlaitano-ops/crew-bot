@@ -184,7 +184,7 @@ def main():
         async with bot:
             await bot.delete_webhook(drop_pending_updates=True)
             print("Webhook deletado, aguardando 2s...")
-        time.sleep(2)
+        time.sleep(30)
 
     asyncio.run(cleanup_and_start())
 
