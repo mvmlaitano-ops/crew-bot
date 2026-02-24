@@ -1,2 +1,1 @@
-worker: python crew_bot.py
-
+worker: python -m gavi
