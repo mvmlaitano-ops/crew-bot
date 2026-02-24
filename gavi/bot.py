@@ -1,4 +1,5 @@
 """Handlers do Telegram para o Gavi."""
+from __future__ import annotations
 
 import logging
 

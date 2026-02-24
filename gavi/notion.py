@@ -1,4 +1,5 @@
 """Cliente Notion API para o Gavi."""
+from __future__ import annotations
 
 import json
 import logging

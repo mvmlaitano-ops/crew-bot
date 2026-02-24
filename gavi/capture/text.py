@@ -1,4 +1,5 @@
 """Classificacao de texto por regras heuristicas."""
+from __future__ import annotations
 
 import re
 

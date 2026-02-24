@@ -1,4 +1,5 @@
 """Transcricao de audio via Groq Whisper (free tier)."""
+from __future__ import annotations
 
 import io
 import json

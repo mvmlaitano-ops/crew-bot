@@ -1,4 +1,5 @@
 """Extracao de conteudo de URLs via trafilatura."""
+from __future__ import annotations
 
 import logging
 
