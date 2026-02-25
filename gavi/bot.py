@@ -267,19 +267,21 @@ async def cmd_agente(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from . import config as cfg
-    notion_ok = bool(cfg.NOTION_TOKEN and cfg.NOTION_INBOX_ID)
+    notion_connected = notion.check_connection()
+    inbox_ok = bool(cfg.NOTION_INBOX_ID)
     gosto_ok = bool(cfg.NOTION_GOSTO_ID)
     pensamento_ok = bool(cfg.NOTION_PENSAMENTO_ID)
     fontes_ok = bool(cfg.NOTION_FONTES_ID)
     groq_ok = bool(cfg.GROQ_API_KEY)
 
     await update.message.reply_text(
-        "📡 *Status Gavi*\n\n"
+        "📡 *Status Gavi v3.1*\n\n"
         f"Bot Telegram: 🟢 Online\n"
-        f"Notion Inbox: {'🟢' if notion_ok else '🔴'}\n"
-        f"Notion Gosto: {'🟢' if gosto_ok else '⚪'}\n"
-        f"Notion Pensamento: {'🟢' if pensamento_ok else '⚪'}\n"
-        f"Notion Fontes: {'🟢' if fontes_ok else '⚪'}\n"
+        f"Notion API: {'🟢 Conectado' if notion_connected else '🔴 Token invalido'}\n"
+        f"  Inbox: {'🟢' if inbox_ok else '⚪'}\n"
+        f"  Gosto: {'🟢' if gosto_ok else '⚪'}\n"
+        f"  Pensamento: {'🟢' if pensamento_ok else '⚪'}\n"
+        f"  Fontes: {'🟢' if fontes_ok else '⚪'}\n"
         f"Groq Whisper: {'🟢' if groq_ok else '⚪'}\n"
         f"Claude Cowork: ⏸️ Aguardando sessao",
         parse_mode="Markdown"

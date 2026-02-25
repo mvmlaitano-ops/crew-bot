@@ -33,8 +33,46 @@ def _post(endpoint: str, payload: dict) -> dict | None:
             logger.info(f"Notion {endpoint}: {resp.status}")
             return result
     except Exception as e:
-        logger.error(f"Notion {endpoint} erro: {e}")
+        error_msg = str(e)
+        # Extrair body do erro HTTP pra diagnostico
+        if hasattr(e, 'read'):
+            try:
+                error_body = e.read().decode()
+                error_msg = f"{e} | body: {error_body[:300]}"
+            except Exception:
+                pass
+        if hasattr(e, 'code'):
+            if e.code == 401:
+                logger.error(f"Notion 401 UNAUTHORIZED — Token invalido ou expirado! Token prefix: {config.NOTION_TOKEN[:12]}...")
+            elif e.code == 404:
+                logger.error(f"Notion 404 — Database nao encontrado ou integracao sem acesso. DB ID no payload: {json.dumps(payload.get('parent', {}))}")
+            elif e.code == 400:
+                logger.error(f"Notion 400 — Payload invalido: {error_msg}")
+            else:
+                logger.error(f"Notion {endpoint} HTTP {e.code}: {error_msg}")
+        else:
+            logger.error(f"Notion {endpoint} erro: {error_msg}")
         return None
+
+
+def check_connection() -> bool:
+    """Testa se o token Notion esta valido. Chamado no startup."""
+    if not config.NOTION_TOKEN:
+        logger.warning("NOTION_TOKEN nao definido.")
+        return False
+
+    try:
+        from urllib.request import Request, urlopen
+        req = Request(f"{NOTION_API}/users/me", headers=_headers())
+        with urlopen(req, timeout=10) as resp:
+            body = json.loads(resp.read().decode())
+            bot_name = body.get("name", "?")
+            logger.info(f"Notion conectado! Bot: {bot_name}")
+            return True
+    except Exception as e:
+        code = getattr(e, 'code', '?')
+        logger.error(f"Notion token INVALIDO (HTTP {code}). Regenere em notion.so/profile/integrations")
+        return False
 
 
 def add_to_inbox(text: str, msg_type: str = "Ideia", agente: str = None) -> bool:

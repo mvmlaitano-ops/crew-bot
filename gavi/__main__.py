@@ -10,6 +10,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
 from . import config
 from . import bot
+from . import notion
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -60,7 +61,9 @@ def main():
     app.add_handler(MessageHandler(filters.VOICE | filters.AUDIO, bot.handle_voice))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, bot.handle_message))
 
-    logger.info("Gavi v3.0 iniciado — Segundo Cerebro")
+    logger.info("Gavi v3.1 iniciado — Segundo Cerebro")
+    notion_ok = notion.check_connection()
+    logger.info(f"  Notion Token: {'OK' if notion_ok else 'FALHOU'}")
     logger.info(f"  Notion Inbox: {'OK' if config.NOTION_INBOX_ID else 'N/A'}")
     logger.info(f"  Notion Gosto: {'OK' if config.NOTION_GOSTO_ID else 'N/A'}")
     logger.info(f"  Notion Pensamento: {'OK' if config.NOTION_PENSAMENTO_ID else 'N/A'}")
